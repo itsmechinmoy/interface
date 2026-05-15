@@ -185,7 +185,7 @@ export default class Subtitles {
 
       const matchesLast = lastSelectedTrack && tracks.filter(([_, { meta }]) => meta.language === lastSelectedTrack!.language && meta.name === lastSelectedTrack!.name)
 
-      if (matchesLast) {
+      if (matchesLast?.length) {
         if (matchesLast.length === 1) return await this.selectCaptions(matchesLast[0]![0])
 
         const matchesLastNumber = matchesLast.find(([_, { meta }]) => meta.number === lastSelectedTrack!.number)
