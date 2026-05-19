@@ -1,7 +1,7 @@
 import { authExchange } from '@urql/exchange-auth'
 import { refocusExchange } from '@urql/exchange-refocus'
 import { Client, fetchExchange } from '@urql/svelte'
-import Bottleneck from 'bottleneck'
+// import Bottleneck from 'bottleneck'
 import Debug from 'debug'
 import { writable } from 'simple-store-svelte'
 import { get } from 'svelte/store'
@@ -41,17 +41,17 @@ debug('Loading urql client')
 storagePromise.promise.finally(() => debug('Graphcache storage initialized'))
 
 export default new class URQLClient extends Client {
-  limiter = new Bottleneck({
-    reservoir: 30,
-    reservoirRefreshAmount: 30,
-    reservoirRefreshInterval: 60_000,
-    maxConcurrent: 10,
-    minTime: 100
-  })
+  // limiter = new Bottleneck({
+  //   reservoir: Infinity,
+  //   reservoirRefreshAmount: Infinity,
+  //   reservoirRefreshInterval: 60_000,
+  //   maxConcurrent: 10,
+  //   minTime: 100
+  // })
 
   error = writable<CombinedError | undefined>(undefined)
 
-  handleRequest = this.limiter.wrap<Response, RequestInfo | URL, RequestInit | undefined>(fetch)
+  // handleRequest = this.limiter.wrap<Response, RequestInfo | URL, RequestInit | undefined>(fetch)
 
   async token () {
     debug('Requesting Anilist token')
@@ -91,7 +91,7 @@ export default new class URQLClient extends Client {
     super({
       url: 'https://graphql.anilist.co',
       preferGetMethod: false,
-      fetch: (req: RequestInfo | URL, opts?: RequestInit) => this.handleRequest(req, opts),
+      // fetch: (req: RequestInfo | URL, opts?: RequestInit) => this.handleRequest(req, opts),
       exchanges: [
         refocusExchange({ minimumTime: 60_000 }),
         cacheOnErrorExchange(),
