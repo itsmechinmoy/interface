@@ -104,7 +104,6 @@ export function hover (node: HTMLElement, [cb = noop, hoverUpdate = noop]: [type
   node.addEventListener('wheel', e => {
     if (inputType.value !== 'mouse') return
     // cheap way to update hover state on scroll
-    // TODO: this is bad on touch, but good on mouse, fix it
     if (document.elementsFromPoint(e.clientX + e.deltaX, e.clientY + e.deltaY).includes(node)) {
       hoverElement()
     } else {

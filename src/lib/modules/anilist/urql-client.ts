@@ -1,21 +1,23 @@
 import { authExchange } from '@urql/exchange-auth'
-import { offlineExchange } from '@urql/exchange-graphcache'
-import { makeDefaultStorage } from '@urql/exchange-graphcache/default-storage'
 import { refocusExchange } from '@urql/exchange-refocus'
 import { Client, fetchExchange } from '@urql/svelte'
 import Bottleneck from 'bottleneck'
 import Debug from 'debug'
 import { writable } from 'simple-store-svelte'
 import { get } from 'svelte/store'
+import { pipe, tap } from 'wonka'
 
 import { anilistClientID } from '../settings'
 
-import { cacheOnErrorExchange } from './error'
+import { makeDefaultStorage } from './exchanges/defaultstorage.ts'
+import { cacheOnErrorExchange } from './exchanges/error.ts'
+import { offlineExchange } from './exchanges/offline.ts'
+import { retryExchange } from './exchanges/retry.ts'
 import gql from './gql'
 import { CommentFrag, UpdateUser, type Entry, FullMedia, FullMediaList, ThreadFrag, type ToggleFavourite, UserLists, Viewer } from './queries'
-import { retryExchange } from './retry'
 import schema from './schema.json' with { type: 'json' }
 
+import type { CombinedError } from '@urql/core'
 import type { ResultOf } from 'gql.tada'
 
 import native from '$lib/modules/native'
@@ -46,6 +48,8 @@ export default new class URQLClient extends Client {
     maxConcurrent: 10,
     minTime: 100
   })
+
+  error = writable<CombinedError | undefined>(undefined)
 
   handleRequest = this.limiter.wrap<Response, RequestInfo | URL, RequestInit | undefined>(fetch)
 
@@ -302,8 +306,18 @@ export default new class URQLClient extends Client {
           initialDelayMs: 100,
           maxDelayMs: 60_000,
           randomDelay: false,
-          maxNumberAttempts: Infinity
+          maxNumberAttempts: Infinity,
+          retryIf: _ => true
         }),
+        ({ forward }) => ops$ => pipe(
+          ops$,
+          forward,
+          tap(({ data, error }) => {
+            if (data && !error) storage.purgeStaleEntries()
+
+            this.error.set(error)
+          })
+        ),
         fetchExchange
       ],
       requestPolicy: 'cache-and-network'

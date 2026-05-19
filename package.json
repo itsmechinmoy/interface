@@ -1,6 +1,6 @@
 {
 	"name": "ui",
-	"version": "6.4.366",
+	"version": "6.4.367",
 	"license": "BUSL-1.1",
 	"private": true,
 	"packageManager": "pnpm@10.28.0",
@@ -104,16 +104,7 @@
 		"workbox-routing": "^7.4.1",
 		"workbox-strategies": "^7.4.1"
 	},
-	"pnpm": {
-		"overrides": {
-			"streamx": "2.20.1"
-		},
-		"ignoredBuiltDependencies": [
-			"bufferutil",
-			"esbuild",
-			"node-datachannel",
-			"utf-8-validate",
-			"wrtc"
-		]
+	"overrides": {
+		"streamx": "2.20.1"
 	}
 }

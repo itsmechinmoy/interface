@@ -68,14 +68,14 @@
 <!-- <SidebarButton href='/app/chat/' class='animated-icon'>
   <Messages size={18} />
 </SidebarButton> -->
-<SidebarButton href='/app/client/' class='animated-icon' id='sidebar-client' data-down='#sidebar-donate'>
+<SidebarButton href='/app/client/' class='animated-icon' id='sidebar-client' data-down='#sidebar-download,#sidebar-donate'>
   <Download size={18} />
 </SidebarButton>
 {#if updateProgress}
   {@const ready = updateProgress === 100}
   <Tooltip.Root>
     <Tooltip.Trigger let:builder tabindex={-1}>
-      <Button builders={[builder]} variant='ghost' id='sidebar-client' data-down='#sidebar-donate' class={cn('animated-icon px-2 w-10 md:pl-4 md:w-12 hidden md:flex select:!bg-transparent md:rounded-l-none', ready && 'text-green-500 select:text-green-700')} on:click={updateAndRestart}>
+      <Button builders={[builder]} variant='ghost' id='sidebar-download' data-down='#sidebar-donate' class={cn('animated-icon px-2 w-10 md:pl-4 md:w-12 hidden md:flex select:!bg-transparent', ready && 'text-green-500 select:text-green-700')} on:click={updateAndRestart}>
         <CloudDownload size={18} />
       </Button>
     </Tooltip.Trigger>
@@ -93,7 +93,7 @@
     {#if error.message !== 'No update available' && navigator.onLine}
       <Tooltip.Root>
         <Tooltip.Trigger let:builder tabindex={-1}>
-          <Button builders={[builder]} variant='ghost' id='sidebar-client' data-down='#sidebar-donate' class={cn('animated-icon px-2 w-10 md:pl-4 md:w-12 hidden md:flex select:!bg-transparent md:rounded-l-none, text-red-500 select:text-red-700')} on:click={manualUpdate}>
+          <Button builders={[builder]} variant='ghost' id='sidebar-download' data-down='#sidebar-donate' class={cn('animated-icon px-2 w-10 md:pl-4 md:w-12 hidden md:flex select:!bg-transparent text-red-500 select:text-red-700')} on:click={manualUpdate}>
             <CloudDownload size={18} />
           </Button>
         </Tooltip.Trigger>

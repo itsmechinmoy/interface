@@ -235,7 +235,6 @@ export const retryExchange = (options: RetryExchangeOptions = {}): Exchange => {
         forward,
         filter(res => {
           const retry = res.operation.context.retry as RetryState | undefined
-
           // Only retry if the error passes the conditional retryIf function (if passed)
           // or if the error contains a networkError
           if (
@@ -255,7 +254,6 @@ export const retryExchange = (options: RetryExchangeOptions = {}): Exchange => {
           // Handle rate limit errors specially
           if (isRateLimitError(res.error)) {
             const rateLimitDelay = getRateLimitDelay(res.error)
-
             dispatchDebug({
               type: 'rateLimitEncountered',
               message: `Rate limit encountered. Retrying after ${Math.round(rateLimitDelay / 1000)} seconds.`,
