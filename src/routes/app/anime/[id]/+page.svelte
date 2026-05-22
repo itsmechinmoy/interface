@@ -41,7 +41,7 @@
     </Tabs.List>
   </div>
   <Tabs.Content value='episodes' tabindex={-1}>
-    <EpisodesList {media} {eps} following={info} />
+    <EpisodesList {media} {eps} following={info} class='overflow-y-visible' />
   </Tabs.Content>
   <Tabs.Content value='relations' tabindex={-1}>
     {#if value === 'relations'}

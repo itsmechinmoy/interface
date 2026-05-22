@@ -117,6 +117,9 @@ const config: Config = {
         sans: [...fontFamily.sans]
       },
       screens: {
+        '4xs': '280px',
+        '3xs': '320px',
+        '2xs': '360px',
         '2xl': '1400px',
         xs: '480px'
       }

@@ -9,6 +9,8 @@
 </script>
 
 <script lang='ts'>
+  import { persisted } from 'svelte-persisted-store'
+
   import Mediahandler from './mediahandler.svelte'
 
   import { goto } from '$app/navigation'
@@ -26,8 +28,8 @@
 
   let dragging = false
 
-  let bottom = '0px'
-  let right = '100%'
+  const bottom = persisted('player-bottom', '0px')
+  const right = persisted('player-right', '100%')
 
   let firstX = 0
   let firstY = 0
@@ -41,8 +43,8 @@
       dragging = true
     }
     if (!dragging) return
-    bottom = e.offsetY - initialY + 'px'
-    right = e.offsetX - initialX + 'px'
+    $bottom = e.offsetY - initialY + 'px'
+    $right = e.offsetX - initialX + 'px'
   }
 
   function endHover () {
@@ -67,8 +69,8 @@
     if (!dragging) goto('/app/player/')
     const istop = window.innerHeight / 2 - clientY >= 0
     const isleft = window.innerWidth / 2 - clientX >= 0
-    bottom = istop ? '-100vb' : '0px'
-    right = isleft ? '-100vi' : '100%'
+    $bottom = istop ? '-100vb' : '0px'
+    $right = isleft ? '-100vi' : '100%'
     dragging = false
     if (pointerId) wrapper.releasePointerCapture(pointerId)
   }
@@ -86,7 +88,7 @@
     isMiniplayer ? 'pointer-events-auto max-w-[22rem] px-4 absolute bottom-0 right-0 [&>*]:rounded-lg [&>*]:overflow-clip miniplayer transition-transform duration-[500ms] ease-[cubic-bezier(0.3,1.5,0.8,1)]' : 'size-full',
     dragging && isMiniplayer && 'dragging',
     !$isPlaying && 'paused select:paused-show'
-  )} style:--top={bottom} style:--left={right}>
+  )} style:--top={$bottom} style:--left={$right}>
     {#if $active}
       {#await $active}
         <div class='w-full flex flex-col gap-2 justify-center items-center bg-black {isMiniplayer ? 'aspect-video' : 'h-full' } text-center text-white' on:click={openPlayer}>

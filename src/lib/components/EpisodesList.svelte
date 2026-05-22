@@ -20,6 +20,9 @@
   import { liveAnimeProgress } from '$lib/modules/watchProgress'
   import { breakpoints, cn, since } from '$lib/utils'
 
+  let classList = ''
+  export { classList as class }
+
   export let eps: EpisodesResponse | null
   export let media: Media
 
@@ -52,7 +55,7 @@
 </script>
 
 <Pagination count={episodeCount} {perPage} bind:currentPage let:pages let:hasNext let:hasPrev let:range let:setPage siblingCount={1}>
-  <div class='overflow-y-auto pt-3 -ml-14 pl-14 -mr-3 pr-3 -mb-3 pb-3' use:dragScroll>
+  <div class={cn('overflow-y-auto pt-3 -ml-14 pl-14 -mr-3 pr-3 -mb-3 pb-3', classList)} use:dragScroll>
     <div class='grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(500px,1fr))] place-items-center gap-x-4 gap-y-7 justify-center align-middle'>
       {#each getPage(currentPage, episodeList) as { episode, image, title, summary, airingAt, airdate, filler, length, rating, runtime } (episode)}
         {@const watched = _progress >= episode && !completed}
@@ -142,27 +145,32 @@
       Showing <span class='font-bold'>{range.start + 1}</span> to <span class='font-bold'>{range.end}</span> of <span class='font-bold'>{episodeCount}</span> episodes
     </p>
     <div class='w-full md:w-auto gap-2 flex items-center'>
-      <Button size='icon' variant='ghost' class='animated-icon' on:click={() => setPage(currentPage - 1)} disabled={!hasPrev}>
+      <Button size={$breakpoints.xs ? 'icon' : 'icon-sm'} variant='ghost' class='animated-icon flex-shrink-0' on:click={() => setPage(currentPage - 1)} disabled={!hasPrev}>
         <ChevronLeft class='size-4' />
       </Button>
-      {#if $breakpoints.md}
+      <!-- {#if $breakpoints.md} -->
+      <div class='w-full flex gap-2 justify-center'>
         {#each pages as { page, type } (page)}
           {#if type === 'ellipsis'}
-            <span class='h-9 w-9 text-center'>...</span>
+            <span class='{$breakpoints.xs ? 'size-9' : 'size-[1.6rem]'} text-center'>...</span>
           {:else}
-            <Button size='icon' variant={page === currentPage ? 'outline' : 'ghost'} on:click={() => setPage(page)}>
+            <Button size={$breakpoints.xs ? 'icon' : 'icon-sm'} variant={page === currentPage ? 'outline' : 'ghost'} on:click={() => setPage(page)}>
               {page}
             </Button>
           {/if}
         {/each}
-      {:else}
+      </div>
+      <!-- {:else}
         <p class='text-center text-[13px] text-muted-foreground w-full block md:hidden'>
           Showing <span class='font-bold'>{range.start + 1}</span> to <span class='font-bold'>{range.end}</span> of <span class='font-bold'>{episodeCount}</span> episodes
         </p>
-      {/if}
-      <Button size='icon' variant='ghost' class='animated-icon' on:click={() => setPage(currentPage + 1)} disabled={!hasNext}>
+      {/if} -->
+      <Button size={$breakpoints.xs ? 'icon' : 'icon-sm'} variant='ghost' class='animated-icon flex-shrink-0' on:click={() => setPage(currentPage + 1)} disabled={!hasNext}>
         <ChevronRight class='size-4' />
       </Button>
     </div>
   </div>
+  <p class='text-center text-[13px] text-muted-foreground md:hidden block pt-2'>
+    Showing <span class='font-bold'>{range.start + 1}</span> to <span class='font-bold'>{range.end}</span> of <span class='font-bold'>{episodeCount}</span> episodes
+  </p>
 </Pagination>
